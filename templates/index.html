@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart ERP - Demand Prediction</title>
+    <!-- Use Inter font for a modern look -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <!-- Phosphor Icons for premium aesthetic -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <!-- Chart.js for Dashboard -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <div class="background-gradients">
+        <div class="gradient-blob blob-1"></div>
+        <div class="gradient-blob blob-2"></div>
+        <div class="gradient-blob blob-3"></div>
+    </div>
+
+    <main class="container">
+        <header class="header">
+            <h1><i class="ph-fill ph-trend-up"></i> Smart ERP</h1>
+            <p>Passenger Demand Prediction System</p>
+        </header>
+
+        <section class="prediction-card glass-panel">
+            <div class="form-section">
+                <h2>Predict Demand</h2>
+                <form id="predictionForm">
+                    <div class="input-group">
+                        <label for="date"><i class="ph ph-calendar-blank"></i> Date</label>
+                        <input type="date" id="date" name="date" required>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="time"><i class="ph ph-clock"></i> Time</label>
+                        <input type="time" id="time" name="time" required>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="area"><i class="ph ph-map-pin"></i> Area</label>
+                        <select id="area" name="area" required>
+                            <option value="" disabled selected>Select an area...</option>
+                            {% for area in areas %}
+                            <option value="{{ area }}">{{ area }}</option>
+                            {% endfor %}
+                            <!-- Fallbacks if model is not loaded -->
+                            {% if not areas %}
+                            <option value="Talkha">Talkha</option>
+                            <option value="Mansoura">Mansoura</option>
+                            <option value="Meet Ghamr">Meet Ghamr</option>
+                            <option value="Dekernes">Dekernes</option>
+                            <option value="Sherbin">Sherbin</option>
+                            {% endif %}
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn-primary">
+                        <i class="ph-bold ph-sparkle"></i> Generate Prediction
+                    </button>
+                </form>
+            </div>
+
+            <div class="result-section">
+                <div id="loading" class="state-container hidden">
+                    <div class="spinner-container">
+                        <div class="spinner"></div>
+                        <div class="spinner-inner"></div>
+                    </div>
+                    <p>Analyzing predictive models...</p>
+                </div>
+
+                <div id="result" class="state-container result-display hidden">
+                    <h3>Predicted Demand</h3>
+                    <div class="passenger-count" id="passengerCount">0</div>
+                    <p class="result-details" id="resultDetails"></p>
+
+                    <div class="recommendation-box">
+                        <i class="ph-fill ph-info"></i>
+                        <p id="recommendationText">Recommendation will appear here.</p>
+                    </div>
+                </div>
+
+                <div id="emptyState" class="state-container empty-state">
+                    <i class="ph-light ph-chart-bar"></i>
+                    <p>Enter details and click predict to see the expected demand.</p>
+                </div>
+
+                <div id="errorState" class="state-container error-state hidden">
+                    <i class="ph-fill ph-warning-circle"></i>
+                    <p id="errorMessage">An error occurred.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="dashboard-section glass-panel" style="margin-top: 2rem;">
+            <h2><i class="ph-fill ph-chart-polar"></i> Analytics Dashboard</h2>
+            <div class="charts-grid">
+                <div class="chart-container">
+                    <h3>Average Hourly Demand</h3>
+                    <canvas id="hourlyTrendChart"></canvas>
+                </div>
+                <div class="chart-container">
+                    <h3>Total Demand by Area</h3>
+                    <canvas id="areaDistributionChart"></canvas>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+
+</html>
