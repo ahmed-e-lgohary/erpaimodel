@@ -6,7 +6,22 @@ def generate_synthetic_data(num_days=180, start_date='2025-10-01'):
     """
     Generates synthetic passenger demand data for different areas.
     """
-    areas = ['Mansoura', 'Talkha', 'Meet Ghamr', 'Dekernes', 'Sherbin']
+    base_locations = {
+        'Mansoura': 70,
+        'Talkha': 50,
+        'Meet Ghamr': 55,
+        'Dekernes': 80,
+        'Sherbin': 60
+    }
+    
+    routes_demand = {}
+    for loc1, d1 in base_locations.items():
+        for loc2, d2 in base_locations.items():
+            if loc1 != loc2:
+                route_name = f"{loc1} - {loc2}"
+                routes_demand[route_name] = (d1 + d2) // 2
+                
+    areas = list(routes_demand.keys())
     
     start_dt = datetime.strptime(start_date, '%Y-%m-%d')
     dates = [start_dt + timedelta(days=i) for i in range(num_days)]
@@ -20,14 +35,8 @@ def generate_synthetic_data(num_days=180, start_date='2025-10-01'):
         
         for hour in range(24):
             for area in areas:
-                # Base demand depends on area
-                base_demand = {
-                    'Mansoura': 70,
-                    'Talkha': 50,
-                    'Meet Ghamr': 55,
-                    'Dekernes': 80,
-                    'Sherbin': 60
-                }[area]
+                # Base demand depends on route
+                base_demand = routes_demand[area]
                 
                 # Demand multiplier based on hour
                 hour_multiplier = 1.0
